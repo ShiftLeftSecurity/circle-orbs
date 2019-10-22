@@ -80,7 +80,7 @@ commands:
             if [ -n "<<parameters.dotnet-platform>>" ]; then
               dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>" ;
             fi ;
-            sl analyze "$dotnet_platform_param" "--<<parameters.language>>" "<<parameters.target>>"
+            sl analyze $dotnet_platform_param "--<<parameters.language>>" "<<parameters.target>>"
           environment:
             SHIFTLEFT_FORCE: <<parameters.force>>
             SHIFTLEFT_APP: <<parameters.app>>
