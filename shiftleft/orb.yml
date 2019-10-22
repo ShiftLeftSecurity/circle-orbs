@@ -19,14 +19,14 @@ commands:
           name: ShiftLeft authentication check
           command: |
             if [ -z "$SHIFTLEFT_ORG_ID" ]; then
-              echo "SHIFTLEFT_ORG_ID variable has not been set." ;
-              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
-              exit 1 ;
+              echo "SHIFTLEFT_ORG_ID variable has not been set."
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating"
+              exit 1
             fi
             if [ -z "$SHIFTLEFT_ACCESS_TOKEN" ]; then
-              echo "SHIFTLEFT_ACCESS_TOKEN variable has not been set." ;
-              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
-              exit 1 ;
+              echo "SHIFTLEFT_ACCESS_TOKEN variable has not been set."
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating"
+              exit 1
             fi
   analyze:
     description: Analyze your application using ShiftLeft
@@ -80,15 +80,15 @@ commands:
       - run:
           name: ShiftLeft Analysis
           command: |
-            dotnet_platform_param="" ;
+            dotnet_platform_param=""
             if [ -n "<<parameters.dotnet-platform>>" ]; then
-              dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>" ;
-            fi ;
-            sl analyze
-              --tag branch="$CIRCLE_BRANCH"
-              $dotnet_platform_param
-              <<parameters.extra-args>>
-              "--<<parameters.language>>"
+              dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>"
+            fi
+            sl analyze \
+              --tag branch="$CIRCLE_BRANCH" \
+              $dotnet_platform_param \
+              <<parameters.extra-args>> \
+              "--<<parameters.language>>" \
               "<<parameters.target>>"
           environment:
             SHIFTLEFT_FORCE: <<parameters.force>>
