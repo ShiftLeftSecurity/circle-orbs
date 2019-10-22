@@ -1,9 +1,35 @@
 version: 2.1
-description: Analyze your application using ShiftLeft Inspect
+description: Analyze your application using ShiftLeft
 
 commands:
+  install:
+    description: Install the ShiftLeft CLI
+    steps:
+      - run:
+          name: ShiftLeft CLI installation
+          command: |
+            test -f /usr/local/bin/sl ||
+            curl https://cdn.shiftleft.io/download/sl >/tmp/sl &&
+            chmod a+rx /tmp/sl &&
+            sudo mv /tmp/sl /usr/local/bin/sl
+  auth-check:
+    description: Verify that ShiftLeft auth credentials are set correctly.
+    steps:
+      - run:
+          name: ShiftLeft authentication check
+          command: |
+            if [ -z "$SHIFTLEFT_ORG_ID" ]; then
+              echo "SHIFTLEFT_ORG_ID variable has not been set." ;
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
+              exit 1 ;
+            fi
+            if [ -z "$SHIFTLEFT_ACCESS_TOKEN" ]; then
+              echo "SHIFTLEFT_ACCESS_TOKEN variable has not been set." ;
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
+              exit 1 ;
+            fi
   analyze:
-    description: Analyze your application using ShiftLeft Inspect
+    description: Analyze your application using ShiftLeft
     parameters:
       target:
         type: string
@@ -11,14 +37,54 @@ commands:
       app:
         type: string
         description: The name of the application the analysis is for
+      wait:
+        type: boolean
+        default: false
+        description: Wait for analysis to finish
+      language:
+        type: enum
+        description: |
+          The language to perform analysis for. Must be one of "java", "csharp",
+          "js", "python", "go"
+        enum: ["java", "csharp", "js", "python", "go"]
+      cpg:
+        type: boolean
+        description: CPG mode
+        default: false
+      no-cpg:
+        type: boolean
+        description: CPG mode disabled
+        default: false
+      force:
+        type: boolean
+        description: Force re-analysis and uploading
+        default: false
+      dotnet-platform:
+        type: enum
+        description: Target .NET platform. Must be one of "core", "framework"
+        enum: ["", "core", "framework"]
+        default: ""
+      policy:
+        type: string
+        description: |
+          The ShiftLeft Policy ID used in the analysis. If this is not set,
+          the ShiftLeft baseline policy is used.
+        default: ""
     steps:
-      - run: '
-        test -f /usr/local/bin/sl ||
-        curl https://cdn.shiftleft.io/download/sl >/tmp/sl &&
-        chmod a+rx /tmp/sl &&
-        sudo mv /tmp/sl /usr/local/bin/sl'
+      - auth-check
+      - install
       - run:
           name: ShiftLeft Analysis
-          command: sl analyze --wait "<<parameters.target>>"
+          command: |
+            dotnet_platform_param="" ;
+            if [ -n "<<parameters.dotnet-platform>>" ]; then
+              dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>" ;
+            fi ;
+            sl analyze "$dotnet_platform_param" "--<<parameters.language>>" "<<parameters.target>>"
           environment:
+            SHIFTLEFT_FORCE: <<parameters.force>>
             SHIFTLEFT_APP: <<parameters.app>>
+            SHIFTLET_WAIT: <<parameters.wait>>
+            SHIFTLET_CPG: <<parameters.cpg>>
+            SHIFTLET_NO_CPG: <<parameters.no-cpg>>
+            SHIFTLET_POLICY: <<parameters.policy>>

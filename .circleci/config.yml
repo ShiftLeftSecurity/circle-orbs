@@ -1,0 +1,34 @@
+version: 2.1
+
+orbs:
+  circleci-cli: circleci/circleci-cli@0.1.5
+
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12.6
+    working_directory: ~/circle-orbs
+    steps:
+      - checkout
+      - circleci-cli/install
+      - circleci-cli/setup
+      - run: circleci orb validate shiftleft/orb.yml
+      - run: circleci orb publish shiftleft/orb.yml shiftleft/shiftleft@dev:$CIRCLE_BRANCH
+  deploy:
+    docker:
+      - image: circleci/golang:1.12.6
+    working_directory: ~/circle-orbs
+    steps:
+      - run: circleci orb publish promote shiftleft/shiftleft@dev:$CIRCLE_BRANCH patch
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
