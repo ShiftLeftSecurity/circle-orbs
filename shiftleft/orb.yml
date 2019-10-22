@@ -19,14 +19,14 @@ commands:
           name: ShiftLeft authentication check
           command: |
             if [ -z "$SHIFTLEFT_ORG_ID" ]; then
-              echo "SHIFTLEFT_ORG_ID variable has not been set." ;
-              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
-              exit 1 ;
+              echo "SHIFTLEFT_ORG_ID variable has not been set."
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating"
+              exit 1
             fi
             if [ -z "$SHIFTLEFT_ACCESS_TOKEN" ]; then
-              echo "SHIFTLEFT_ACCESS_TOKEN variable has not been set." ;
-              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating" ;
-              exit 1 ;
+              echo "SHIFTLEFT_ACCESS_TOKEN variable has not been set."
+              echo "See https://docs.shiftleft.io/shiftleft/using-shiftleft-inspect-and-shiftleft-protect/using-the-shiftleft-cli/authenticating"
+              exit 1
             fi
   analyze:
     description: Analyze your application using ShiftLeft
@@ -70,17 +70,26 @@ commands:
           The ShiftLeft Policy ID used in the analysis. If this is not set,
           the ShiftLeft baseline policy is used.
         default: ""
+      extra-args:
+        type: string
+        description: Additional flags/arguments to be passed to the sl analyze command.
+        default: ""
     steps:
       - auth-check
       - install
       - run:
           name: ShiftLeft Analysis
           command: |
-            dotnet_platform_param="" ;
+            dotnet_platform_param=""
             if [ -n "<<parameters.dotnet-platform>>" ]; then
-              dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>" ;
-            fi ;
-            sl analyze $dotnet_platform_param "--<<parameters.language>>" "<<parameters.target>>"
+              dotnet_platform_param="--dotnet-<<parameters.dotnet-platform>>"
+            fi
+            sl analyze \
+              --tag branch="$CIRCLE_BRANCH" \
+              $dotnet_platform_param \
+              <<parameters.extra-args>> \
+              "--<<parameters.language>>" \
+              "<<parameters.target>>"
           environment:
             SHIFTLEFT_FORCE: <<parameters.force>>
             SHIFTLEFT_APP: <<parameters.app>>
