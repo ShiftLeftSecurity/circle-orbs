@@ -5,6 +5,8 @@ orbs:
 
 jobs:
   build:
+    docker:
+      - image: circleci/golang:1.12.6
     working_directory: circle-orbs
     steps:
       - checkout
@@ -13,6 +15,8 @@ jobs:
       - run: circleci orb validate shiftleft/orb.yml
       - run: circleci orb publish shiftleft/orb.yml shiftleft/shiftleft@dev:$CIRCLE_BRANCH
   deploy:
+    docker:
+      - image: circleci/golang:1.12.6
     working_directory: circle-orbs
     steps:
       - run: circleci orb publish promote shiftleft/shiftleft@dev:$CIRCLE_BRANCH patch
