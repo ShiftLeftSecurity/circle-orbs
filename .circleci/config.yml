@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12.6
-    working_directory: circle-orbs
+    working_directory: ~/circle-orbs
     steps:
       - checkout
       - circleci-cli/install
@@ -17,7 +17,7 @@ jobs:
   deploy:
     docker:
       - image: circleci/golang:1.12.6
-    working_directory: circle-orbs
+    working_directory: ~/circle-orbs
     steps:
       - run: circleci orb publish promote shiftleft/shiftleft@dev:$CIRCLE_BRANCH patch
 
