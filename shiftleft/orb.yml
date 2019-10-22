@@ -1,0 +1,24 @@
+version: 2.1
+description: Analyze your application using ShiftLeft Inspect
+
+commands:
+  analyze:
+    description: Analyze your application using ShiftLeft Inspect
+    parameters:
+      target:
+        type: string
+        description: The target file to analyze
+      app:
+        type: string
+        description: The name of the application the analysis is for
+    steps:
+      - run: '
+        test -f /usr/local/bin/sl ||
+        curl https://cdn.shiftleft.io/download/sl >/tmp/sl &&
+        chmod a+rx /tmp/sl &&
+        sudo mv /tmp/sl /usr/local/bin/sl'
+      - run:
+          name: ShiftLeft Analysis
+          command: sl analyze --wait "<<parameters.target>>"
+          environment:
+            SHIFTLEFT_APP: <<parameters.app>>
