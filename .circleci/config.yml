@@ -19,6 +19,9 @@ jobs:
       - image: circleci/golang:1.12.6
     working_directory: ~/circle-orbs
     steps:
+      - checkout
+      - circleci-cli/install
+      - circleci-cli/setup
       - run: circleci orb publish promote shiftleft/shiftleft@dev:$CIRCLE_BRANCH patch
 
 workflows:
