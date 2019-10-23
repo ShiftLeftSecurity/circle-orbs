@@ -1,5 +1,21 @@
 version: 2.1
-description: Analyze your application using ShiftLeft
+description: |
+  Analyze your application using ShiftLeft (https://www.shiftleft.io/).
+
+  ShiftLeft is a continuous application security platform, purpose-built for
+  the modern software development life cycle. It combines next-generation static
+  code analysis (to quickly and accurately identify vulnerabilities) with
+  application instrumentation (to protect the application) in an automated
+  workflow. This combination of runtime-informed code analysis and code-informed
+  runtime protection delivers the most accurate, automated, and comprehensive
+  application security solution on the market today.
+
+  In order to use this orb, you will need a ShiftLeft account (https://www.shiftleft.io/login) and
+  the associated Org ID and Access Token provided as environment variables
+  SHIFTLEFT_ORG_ID and SHIFTLEFT_ACCESS_TOKEN, respectively. These are available
+  in the user profile page (https://www.shiftleft.io/user/profile).
+
+  Code for this orb is available at https://github.com/ShiftLeftSecurity/circle-orbs.
 
 commands:
   install:
@@ -14,6 +30,21 @@ commands:
             sudo mv /tmp/sl /usr/local/bin/sl
   auth-check:
     description: Verify that ShiftLeft auth credentials are set correctly.
+    parameters:
+      org-id:
+        type: env_var_name
+        description: |
+          The env var name to use for the org ID. Do not change this.
+          The org ID needs to be provided as an environment variable before using this orb.
+          The org ID can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ORG_ID"
+      access-token:
+        type: env_var_name
+        description: |
+          The env var name to use for the access token. Do not change this.
+          The access token needs to be provided as an environment variable before using this orb.
+          The access token can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ACCESS_TOKEN"
     steps:
       - run:
           name: ShiftLeft authentication check
@@ -74,6 +105,20 @@ commands:
         type: string
         description: Additional flags/arguments to be passed to the sl analyze command.
         default: ""
+      org-id:
+        type: env_var_name
+        description: |
+          The env var name to use for the org ID. Do not change this.
+          The org ID needs to be provided as an environment variable before using this orb.
+          The org ID can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ORG_ID"
+      access-token:
+        type: env_var_name
+        description: |
+          The env var name to use for the access token. Do not change this.
+          The access token needs to be provided as an environment variable before using this orb.
+          The access token can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ACCESS_TOKEN"
     steps:
       - auth-check
       - install
@@ -93,7 +138,117 @@ commands:
           environment:
             SHIFTLEFT_FORCE: <<parameters.force>>
             SHIFTLEFT_APP: <<parameters.app>>
-            SHIFTLET_WAIT: <<parameters.wait>>
-            SHIFTLET_CPG: <<parameters.cpg>>
-            SHIFTLET_NO_CPG: <<parameters.no-cpg>>
-            SHIFTLET_POLICY: <<parameters.policy>>
+            SHIFTLEFT_WAIT: <<parameters.wait>>
+            SHIFTLEFT_CPG: <<parameters.cpg>>
+            SHIFTLEFT_NO_CPG: <<parameters.no-cpg>>
+            SHIFTLEFT_POLICY: <<parameters.policy>>
+
+jobs:
+  analyze:
+    description: Analyze applications using ShiftLeft
+    executor: default
+    parameters:
+      target:
+        type: string
+        description: The target file to analyze
+      app:
+        type: string
+        description: The name of the application the analysis is for
+      wait:
+        type: boolean
+        default: false
+        description: Wait for analysis to finish
+      language:
+        type: enum
+        description: |
+          The language to perform analysis for. Must be one of "java", "csharp",
+          "js", "python", "go"
+        enum: ["java", "csharp", "js", "python", "go"]
+      cpg:
+        type: boolean
+        description: CPG mode
+        default: false
+      no-cpg:
+        type: boolean
+        description: CPG mode disabled
+        default: false
+      force:
+        type: boolean
+        description: Force re-analysis and uploading
+        default: false
+      dotnet-platform:
+        type: enum
+        description: Target .NET platform. Must be one of "core", "framework"
+        enum: ["", "core", "framework"]
+        default: ""
+      policy:
+        type: string
+        description: |
+          The ShiftLeft Policy ID used in the analysis. If this is not set,
+          the ShiftLeft baseline policy is used.
+        default: ""
+      extra-args:
+        type: string
+        description: Additional flags/arguments to be passed to the sl analyze command.
+        default: ""
+      org-id:
+        type: env_var_name
+        description: |
+          The env var name to use for the org ID. Do not change this.
+          The org ID needs to be provided as an environment variable before using this orb.
+          The org ID can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ORG_ID"
+      access-token:
+        type: env_var_name
+        description: |
+          The env var name to use for the access token. Do not change this.
+          The access token needs to be provided as an environment variable before using this orb.
+          The access token can be obtained from https://www.shiftleft.io/user/profile.
+        default: "SHIFTLEFT_ACCESS_TOKEN"
+      pre-analyze:
+        type: steps
+        description: |
+          Run these steps prior to analyzing the application, but after the
+          checkout step.
+    steps:
+      - checkout
+      - steps: <<parameters.pre-analyze>>
+      - analyze:
+          target: <<parameters.target>>
+          app: <<parameters.app>>
+          wait: <<parameters.wait>>
+          language: <<parameters.language>>
+          cpg: <<parameters.cpg>>
+          no-cpg: <<parameters.no-cpg>>
+          force: <<parameters.force>>
+          dotnet-platform: <<parameters.dotnet-platform>>
+          policy: <<parameters.policy>>
+          extra-args: <<parameters.extra-args>>
+          org-id: <<parameters.org-id>>
+          access-token: <<parameters.access-token>>
+
+executors:
+  default:
+    description: A simple default executor.
+    machine: true
+
+examples:
+  simple-analysis:
+    description: Analyzing an application with ShiftLeft
+    usage:
+      version: 2.1
+      orbs:
+        shiftleft: shiftleft/shiftleft@0.0
+      jobs:
+        build:
+          machine: true
+          steps:
+            - shiftleft/analyze:
+                app: my app
+                target: build/my-jar-0.0.1.jar
+                language: java
+      workflows:
+        version: 2.1
+        workflow:
+          jobs:
+            - build
