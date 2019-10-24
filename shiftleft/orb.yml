@@ -233,8 +233,8 @@ executors:
     machine: true
 
 examples:
-  simple-analysis:
-    description: Analyzing an application with ShiftLeft
+  analysis-via-command:
+    description: Analyzing an application with ShiftLeft using commands
     usage:
       version: 2.1
       orbs:
@@ -252,3 +252,17 @@ examples:
         workflow:
           jobs:
             - build
+  analysis-via-job:
+    description: Analyzing an application with ShiftLeft using jobs
+    usage:
+      version: 2.1
+      orbs:
+        shiftleft: shiftleft/shiftleft@0.0
+      workflows:
+        version: 2.1
+        workflow:
+          jobs:
+            - shiftleft/analyze
+                app: my app
+                target: build/my-jar-0.0.1.jar
+                language: java
