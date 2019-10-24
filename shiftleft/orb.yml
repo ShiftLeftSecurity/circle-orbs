@@ -262,7 +262,7 @@ examples:
         version: 2.1
         workflow:
           jobs:
-            - shiftleft/analyze
+            - shiftleft/analyze:
                 app: my app
                 target: build/my-jar-0.0.1.jar
                 language: java
