@@ -10,12 +10,12 @@ description: |
   runtime protection delivers the most accurate, automated, and comprehensive
   application security solution on the market today.
 
-  In order to use this orb, you will need a ShiftLeft account (https://www.shiftleft.io/login) and
-  the associated Org ID and Access Token provided as environment variables
-  SHIFTLEFT_ORG_ID and SHIFTLEFT_ACCESS_TOKEN, respectively. These are available
-  in the user profile page (https://www.shiftleft.io/user/profile).
+  You use the ShiftLeft Orb to integrate your CircleCI project with ShiftLeft. To do so:
+  1. Obtain a ShiftLeft account (https://www.shiftleft.io/login)
+  2. Identify your ShiftLeft Org ID and Access Token environment variables from the ShiftLeft Dashboard User Profile page 
+  (https://www.shiftleft.io/user/profile).
 
-  Code for this orb is available at https://github.com/ShiftLeftSecurity/circle-orbs.
+  Code for the ShiftLeft Orb is available at https://github.com/ShiftLeftSecurity/circle-orbs.
 
 commands:
   install:
