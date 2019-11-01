@@ -238,7 +238,7 @@ examples:
     usage:
       version: 2.1
       orbs:
-        shiftleft: shiftleft/shiftleft@1.0
+        shiftleft: shiftleft/shiftleft@x.y
       jobs:
         build:
           machine: true
@@ -257,7 +257,7 @@ examples:
     usage:
       version: 2.1
       orbs:
-        shiftleft: shiftleft/shiftleft@1.0
+        shiftleft: shiftleft/shiftleft@x.y
       workflows:
         version: 2.1
         workflow:
