@@ -161,8 +161,7 @@ jobs:
       language:
         type: enum
         description: |
-          The language to perform analysis for. Must be one of "java", "csharp",
-          "js", "python", "go"
+          The language to perform analysis for. Must be one of "java" or "csharp".
         enum: ["java", "csharp", "js", "python", "go"]
       cpg:
         type: boolean
