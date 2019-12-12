@@ -11,7 +11,7 @@ description: |
   application security solution on the market today.
 
   You use the ShiftLeft Orb to integrate your CircleCI project with ShiftLeft. To do so:
-  1. Obtain a ShiftLeft account (https://www.shiftleft.io/register?campaign=circleci)
+  1. Obtain a ShiftLeft account (https://www.shiftleft.io/register?referral=circleci)
   2. Identify your ShiftLeft Org ID and Access Token environment variables from the ShiftLeft Dashboard User Profile page 
   (https://www.shiftleft.io/user/profile).
 
