@@ -1,6 +1,6 @@
 version: 2.1
 description: |
-  Analyze your application using ShiftLeft (https://www.shiftleft.io/).
+  Analyze your application using ShiftLeft.
 
   ShiftLeft is a continuous application security platform, purpose-built for
   the modern software development life cycle. It combines next-generation static
@@ -15,7 +15,9 @@ description: |
   2. Identify your ShiftLeft Org ID and Access Token environment variables from the ShiftLeft Dashboard User Profile page 
   (https://www.shiftleft.io/user/profile).
 
-  Code for the ShiftLeft Orb is available at https://github.com/ShiftLeftSecurity/circle-orbs.
+display:
+  home_url: https://www.shiftleft.io
+  source_url: https://github.com/ShiftLeftSecurity/circle-orbs
 
 commands:
   install:
