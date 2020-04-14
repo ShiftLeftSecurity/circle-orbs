@@ -1,12 +1,12 @@
 version: 2.1
 
 orbs:
-  circleci-cli: circleci/circleci-cli@0.1.5
+  circleci-cli: circleci/circleci-cli@0.1.6
 
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.12.6
+      - image: circleci/golang:1.13.4
     working_directory: ~/circle-orbs
     steps:
       - checkout
