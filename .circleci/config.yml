@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.12.6
+      - image: circleci/golang:1.13.4
     working_directory: ~/circle-orbs
     steps:
       - checkout
